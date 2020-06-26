@@ -447,6 +447,19 @@ public class GuideView extends FrameLayout {
         linePaint.setColor(color);
     }
 
+    public void setCircleColor(int color) {
+        circleFillPaint.setColor(color);
+    }
+
+    public void setCircleStrokeColor(int color) {
+        circleStrokePaint.setColor(color);
+    }
+
+    public void setCircleStrokeWidth(float width) {
+        circleStrokeWidth = width * density;
+        circleStrokePaint.setStrokeWidth(circleStrokeWidth);
+    }
+
     public void setContentSpan(Spannable span) {
         mMessageView.setContentSpan(span);
     }
@@ -458,7 +471,6 @@ public class GuideView extends FrameLayout {
     public void setContentTypeFace(Typeface typeFace) {
         mMessageView.setContentTypeFace(typeFace);
     }
-
 
     public void setTitleTextSize(int size) {
         mMessageView.setTitleTextSize(size);
@@ -511,7 +523,9 @@ public class GuideView extends FrameLayout {
         private float lineWidth;
         private int lineColor;
         private float circleSize;
-        private float strokeCircleWidth;
+        private float circleStrokeWidth;
+        private int circleColor;
+        private int circleStrokeColor;
         private int titleTextSize;
         private int contentTextSize;
         private int messageBackgroundColor;
@@ -679,8 +693,18 @@ public class GuideView extends FrameLayout {
          *
          * @param size you can change stroke circle indicator size
          */
-        public Builder setCircleStrokeIndicatorSize(float size) {
-            this.strokeCircleWidth = size;
+        public Builder setCircleStrokeWidth(float size) {
+            this.circleStrokeWidth = size;
+            return this;
+        }
+
+        public Builder setCircleColor(int color) {
+            this.circleColor = color;
+            return this;
+        }
+
+        public Builder setCircleStrokeColor(int color) {
+            this.circleStrokeColor = color;
             return this;
         }
 
@@ -742,25 +766,29 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
-            if (strokeCircleWidth != 0) {
-                guideView.circleStrokeWidth = strokeCircleWidth * density;
-            }
             if(dimColor != 0)
                 guideView.setDimColor(dimColor);
 
             guideView.init();
 
+            guideView.setTitle(title);
+
             if (circleSize != 0) {
                 guideView.circleIndicatorSizeFinal = circleSize * density;
             }
-            guideView.setTitle(title);
-
+            if (circleStrokeWidth != 0) {
+                guideView.setCircleStrokeWidth(circleStrokeWidth);
+            }
             if(lineColor != 0)
                 guideView.setLineColor(lineColor);
             if (lineHeight != 0)
                 guideView.setLineHeight(lineHeight);
             if (lineWidth != 0)
                 guideView.setLineWidth(lineWidth);
+            if(circleStrokeColor != 0)
+                guideView.setCircleStrokeColor(circleStrokeColor);
+            if(circleColor != 0)
+                guideView.setCircleColor(circleColor);
             if (contentText != null)
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
