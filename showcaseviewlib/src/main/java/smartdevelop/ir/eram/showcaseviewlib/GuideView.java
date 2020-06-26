@@ -54,8 +54,8 @@ public class GuideView extends FrameLayout {
 
     private final Paint dimPaint = new Paint();
     private final Paint linePaint = new Paint();
-    private final Paint circlePaint = new Paint();
-    private final Paint circleInnerPaint = new Paint();
+    private final Paint circleStrokePaint = new Paint();
+    private final Paint circleFillPaint = new Paint();
     private final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private View target;
@@ -110,7 +110,9 @@ public class GuideView extends FrameLayout {
         initPaints();
 
         initMessageView();
+    }
 
+    private void startAnimation() {
         post(new Runnable() {
             @Override
             public void run() {
@@ -155,15 +157,15 @@ public class GuideView extends FrameLayout {
         linePaint.setStrokeWidth(lineWidth);
         linePaint.setAntiAlias(true);
 
-        circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(CIRCLE_INDICATOR_COLOR);
-        circlePaint.setStrokeCap(Paint.Cap.ROUND);
-        circlePaint.setStrokeWidth(circleStrokeWidth);
-        circlePaint.setAntiAlias(true);
+        circleStrokePaint.setStyle(Paint.Style.STROKE);
+        circleStrokePaint.setColor(CIRCLE_INDICATOR_COLOR);
+        circleStrokePaint.setStrokeCap(Paint.Cap.ROUND);
+        circleStrokePaint.setStrokeWidth(circleStrokeWidth);
+        circleStrokePaint.setAntiAlias(true);
 
-        circleInnerPaint.setStyle(Paint.Style.FILL);
-        circleInnerPaint.setColor(CIRCLE_INNER_INDICATOR_COLOR);
-        circleInnerPaint.setAntiAlias(true);
+        circleFillPaint.setStyle(Paint.Style.FILL);
+        circleFillPaint.setColor(CIRCLE_INNER_INDICATOR_COLOR);
+        circleFillPaint.setAntiAlias(true);
 
         targetPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         targetPaint.setAntiAlias(true);
@@ -274,8 +276,8 @@ public class GuideView extends FrameLayout {
                 stopY,
                 linePaint);
 
-        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circlePaint);
-        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleInnerPaint);
+        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circleStrokePaint);
+        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleFillPaint);
 
         canvas.drawRoundRect(targetRect, RADIUS_SIZE_TARGET_RECT, RADIUS_SIZE_TARGET_RECT, targetPaint);
     }
@@ -508,8 +510,7 @@ public class GuideView extends FrameLayout {
         private float lineHeight;
         private float lineWidth;
         private int lineColor;
-        private float circleIndicatorSize;
-        private float circleInnerIndicatorSize;
+        private float circleSize;
         private float strokeCircleWidth;
         private int titleTextSize;
         private int contentTextSize;
@@ -668,18 +669,8 @@ public class GuideView extends FrameLayout {
          *
          * @param size you can change circle size indicator
          */
-        public Builder setCircleIndicatorSize(float size) {
-            this.circleIndicatorSize = size;
-            return this;
-        }
-
-        /**
-         * changing inner circle size indicator
-         *
-         * @param size you can change inner circle indicator size
-         */
-        public Builder setCircleInnerIndicatorSize(float size) {
-            this.circleInnerIndicatorSize = size;
+        public Builder setCircleSize(float size) {
+            this.circleSize = size;
             return this;
         }
 
@@ -751,12 +742,6 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
-            if (circleIndicatorSize != 0) {
-                guideView.circleIndicatorSize = circleIndicatorSize * density;
-            }
-            if (circleInnerIndicatorSize != 0) {
-                guideView.circleInnerIndicatorSize = circleInnerIndicatorSize * density;
-            }
             if (strokeCircleWidth != 0) {
                 guideView.circleStrokeWidth = strokeCircleWidth * density;
             }
@@ -765,6 +750,9 @@ public class GuideView extends FrameLayout {
 
             guideView.init();
 
+            if (circleSize != 0) {
+                guideView.circleIndicatorSizeFinal = circleSize * density;
+            }
             guideView.setTitle(title);
 
             if(lineColor != 0)
@@ -800,7 +788,7 @@ public class GuideView extends FrameLayout {
             if(messageStrokeWidth != 0)
                 guideView.setMessageStrokeWidth(messageStrokeWidth);
 
-
+            guideView.startAnimation();
                 return guideView;
         }
 
