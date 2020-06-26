@@ -46,7 +46,7 @@ public class GuideView extends FrameLayout {
     private static final int RADIUS_SIZE_TARGET_RECT = 15;
     private static final int MARGIN_INDICATOR = 15;
 
-    private static final int BACKGROUND_COLOR = 0x99000000;
+    private static final int DIM_COLOR_DEFAULT = 0x99000000;
     private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
     private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
@@ -144,7 +144,7 @@ public class GuideView extends FrameLayout {
     }
 
     private void initPaints() {
-        dimPaint.setColor(BACKGROUND_COLOR);
+        dimPaint.setColor(DIM_COLOR_DEFAULT);
         dimPaint.setStyle(Paint.Style.FILL);
         dimPaint.setAntiAlias(true);
 
@@ -432,6 +432,9 @@ public class GuideView extends FrameLayout {
         mMessageView.setTitleTextSize(size);
     }
 
+    public void setDimColor(int color) {
+        dimPaint.setColor(color);
+    }
 
     public void setContentTextSize(int size) {
         mMessageView.setContentTextSize(size);
@@ -449,6 +452,7 @@ public class GuideView extends FrameLayout {
         private GuideListener guideListener;
         private int titleTextSize;
         private int contentTextSize;
+        private int dimColor;
         private float lineIndicatorHeight;
         private float lineIndicatorWidthSize;
         private float circleIndicatorSize;
@@ -542,6 +546,17 @@ public class GuideView extends FrameLayout {
          */
         public Builder setContentTextSize(int size) {
             this.contentTextSize = size;
+            return this;
+        }
+
+        /**
+         * Changes default dim color
+         *
+         * @param color dim color
+         * @return builder
+         */
+        public Builder setDimColor(int color) {
+            this.dimColor = color;
             return this;
         }
 
@@ -650,6 +665,8 @@ public class GuideView extends FrameLayout {
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
                 guideView.setTitleTextSize(titleTextSize);
+            if(dimColor != 0)
+                guideView.setDimColor(dimColor);
             if (contentTextSize != 0)
                 guideView.setContentTextSize(contentTextSize);
             if (contentSpan != null)
