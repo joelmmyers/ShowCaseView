@@ -1,7 +1,6 @@
 package smartdevelop.ir.eram.showcaseviewlib;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -78,7 +77,7 @@ public class GuideView extends FrameLayout {
     private int messageViewPadding;
     private float guideMargin;
     private float circleStrokeWidth;
-    private int highlightingRadius;
+    private float highlightingRadius;
     private HighlightingShape highlightingShape;
     private boolean isPerformedAnimationSize = false;
 
@@ -383,18 +382,19 @@ public class GuideView extends FrameLayout {
     }
 
     private Point resolveMessageViewLocation() {
+        int messageWidth = mMessageView.getMeasuredWidth();
         int xMessageView;
         if (mGravity == Gravity.center) {
-            xMessageView = (int) (targetRect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
+            xMessageView = (int) (targetRect.left - messageWidth / 2 + target.getWidth() / 2);
         } else
-            xMessageView = (int) (targetRect.right) - mMessageView.getWidth();
+            xMessageView = (int) (targetRect.right) - messageWidth;
 
         if (isLandscape()) {
             xMessageView -= getNavigationBarSize();
         }
 
-        if (xMessageView + mMessageView.getWidth() > getWidth())
-            xMessageView = getWidth() - mMessageView.getWidth();
+        if (xMessageView + messageWidth > getMeasuredWidth())
+            xMessageView = getMeasuredWidth() - messageWidth;
         if (xMessageView < 0)
             xMessageView = 0;
 
@@ -404,11 +404,12 @@ public class GuideView extends FrameLayout {
     }
 
     private void resolveMessagePositionY() {
+        int messageHeight = mMessageView.getMeasuredHeight();
         switch (messageGravity) {
             case AUTO: {
-                if (targetRect.top + (lineHeight) > getHeight() / 2f) {
+                if (targetRect.top + (lineHeight) > getMeasuredHeight() / 2f) {
                     isMessageAtTop = false;
-                    yMessageView = (int) (targetRect.top - mMessageView.getHeight() - lineHeight);
+                    yMessageView = (int) (targetRect.top - messageHeight - lineHeight);
                 } else {
                     isMessageAtTop = true;
                     yMessageView = (int) (targetRect.top + target.getHeight() + lineHeight);
@@ -417,7 +418,7 @@ public class GuideView extends FrameLayout {
             }
             case TOP: {
                 isMessageAtTop = false;
-                yMessageView = (int) (targetRect.top - mMessageView.getHeight() - lineHeight);
+                yMessageView = (int) (targetRect.top - messageHeight - lineHeight);
                 break;
             }
             case BOTTOM: {
@@ -533,7 +534,7 @@ public class GuideView extends FrameLayout {
         this.mMessageView.setStrokeWidth(width);
     }
 
-    public void setHighlightingRadius(int radius) {
+    public void setHighlightingRadius(float radius) {
         if(highlightingShape != HighlightingShape.CIRCLE)
             highlightingRadius = radius;
     }
@@ -564,7 +565,7 @@ public class GuideView extends FrameLayout {
         private float circleStrokeWidth;
         private int circleColor;
         private int circleStrokeColor;
-        private int highlightingRadius;
+        private float highlightingRadius;
         private HighlightingShape highlightingShape;
         private int titleTextSize;
         private int contentTextSize;
@@ -572,7 +573,7 @@ public class GuideView extends FrameLayout {
         private int messageTitleColor;
         private int messageContentColor;
         private int messageStrokeColor;
-        private int messageStrokeWidth;
+        private float messageStrokeWidth;
 
         public Builder(Context context) {
             this.context = context;
@@ -748,7 +749,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
-        public Builder setHighlightingRadius(int radius) {
+        public Builder setHighlightingRadius(float radius) {
             this.highlightingRadius = radius;
             return this;
         }
@@ -800,7 +801,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
-        public Builder setMessageStrokeWidth(int width) {
+        public Builder setMessageStrokeWidth(float width) {
             this.messageStrokeWidth = width;
             return this;
         }
