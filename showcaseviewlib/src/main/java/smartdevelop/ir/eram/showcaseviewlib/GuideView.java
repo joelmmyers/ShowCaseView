@@ -71,11 +71,11 @@ public class GuideView extends FrameLayout {
     private float circleIndicatorSize;
     private float circleIndicatorSizeFinal;
     private float circleInnerIndicatorSize;
-    private float lineIndicatorWidthSize;
+    private float lineWidth;
+    private float lineHeight;
     private int messageViewPadding;
     private float guideMargin;
     private float circleStrokeWidth;
-    private float indicatorHeight;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -133,13 +133,13 @@ public class GuideView extends FrameLayout {
 
         guideMargin = (int) (isMessageAtTop ? guideMargin : -guideMargin);
         startYLineAndCircle = (isMessageAtTop ? targetRect.bottom : targetRect.top) + guideMargin;
-        stopY = yMessageView + indicatorHeight;
+        stopY = yMessageView + lineHeight;
     }
 
     private void initParams() {
-        lineIndicatorWidthSize = LINE_INDICATOR_WIDTH_SIZE * density;
+        lineWidth = LINE_INDICATOR_WIDTH_SIZE * density;
         guideMargin = MARGIN_INDICATOR * density;
-        indicatorHeight = INDICATOR_HEIGHT * density;
+        lineHeight = INDICATOR_HEIGHT * density;
         messageViewPadding = (int) (MESSAGE_VIEW_PADDING * density);
         circleStrokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
@@ -152,7 +152,7 @@ public class GuideView extends FrameLayout {
 
         linePaint.setStyle(Paint.Style.FILL);
         linePaint.setColor(LINE_INDICATOR_COLOR);
-        linePaint.setStrokeWidth(lineIndicatorWidthSize);
+        linePaint.setStrokeWidth(lineWidth);
         linePaint.setAntiAlias(true);
 
         circlePaint.setStyle(Paint.Style.STROKE);
@@ -378,24 +378,24 @@ public class GuideView extends FrameLayout {
     private void resolveMessagePositionY() {
         switch (messageGravity) {
             case AUTO: {
-                if (targetRect.top + (indicatorHeight) > getHeight() / 2f) {
+                if (targetRect.top + (lineHeight) > getHeight() / 2f) {
                     isMessageAtTop = false;
-                    yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+                    yMessageView = (int) (targetRect.top - mMessageView.getHeight() - lineHeight);
                 }
                 else {
                     isMessageAtTop = true;
-                    yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+                    yMessageView = (int) (targetRect.top + target.getHeight() + lineHeight);
                 }
                 break;
             }
             case TOP: {
                 isMessageAtTop = false;
-                yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+                yMessageView = (int) (targetRect.top - mMessageView.getHeight() - lineHeight);
                 break;
             }
             case BOTTOM: {
                 isMessageAtTop = true;
-                yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+                yMessageView = (int) (targetRect.top + target.getHeight() + lineHeight);
                 break;
             }
         }
@@ -432,6 +432,18 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentText(str);
     }
 
+    public void setLineWidth(float width) {
+        lineWidth = width * density;
+        linePaint.setStrokeWidth(lineWidth);
+    }
+
+    public void setLineHeight(float height) {
+        lineHeight = height * density;
+    }
+
+    public void setLineColor(int color) {
+        linePaint.setColor(color);
+    }
 
     public void setContentSpan(Spannable span) {
         mMessageView.setContentSpan(span);
@@ -493,8 +505,9 @@ public class GuideView extends FrameLayout {
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
         private int dimColor;
-        private float lineIndicatorHeight;
-        private float lineIndicatorWidthSize;
+        private float lineHeight;
+        private float lineWidth;
+        private int lineColor;
         private float circleIndicatorSize;
         private float circleInnerIndicatorSize;
         private float strokeCircleWidth;
@@ -629,8 +642,8 @@ public class GuideView extends FrameLayout {
          *
          * @param height you can change height indicator (Converting to Dp)
          */
-        public Builder setIndicatorHeight(float height) {
-            this.lineIndicatorHeight = height;
+        public Builder setLineHeight(float height) {
+            this.lineHeight = height;
             return this;
         }
 
@@ -639,8 +652,14 @@ public class GuideView extends FrameLayout {
          *
          * @param width you can change width indicator
          */
-        public Builder setIndicatorWidthSize(float width) {
-            this.lineIndicatorWidthSize = width;
+        public Builder setLineWidth(float width) {
+            this.lineWidth = width;
+            return this;
+        }
+
+        //TODO Documentation
+        public Builder setLineColor(int color) {
+            this.lineColor = color;
             return this;
         }
 
@@ -732,12 +751,6 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
-            if (lineIndicatorHeight != 0) {
-                guideView.indicatorHeight = lineIndicatorHeight * density;
-            }
-            if (lineIndicatorWidthSize != 0) {
-                guideView.lineIndicatorWidthSize = lineIndicatorWidthSize * density;
-            }
             if (circleIndicatorSize != 0) {
                 guideView.circleIndicatorSize = circleIndicatorSize * density;
             }
@@ -753,6 +766,13 @@ public class GuideView extends FrameLayout {
             guideView.init();
 
             guideView.setTitle(title);
+
+            if(lineColor != 0)
+                guideView.setLineColor(lineColor);
+            if (lineHeight != 0)
+                guideView.setLineHeight(lineHeight);
+            if (lineWidth != 0)
+                guideView.setLineWidth(lineWidth);
             if (contentText != null)
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
