@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.MessageGravity;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 /**
@@ -80,6 +81,7 @@ public class GuideView extends FrameLayout {
 
     private GuideListener mGuideListener;
     private Gravity mGravity;
+    private MessageGravity messageGravity;
     private DismissType dismissType;
     private GuideMessageView mMessageView;
 
@@ -368,22 +370,38 @@ public class GuideView extends FrameLayout {
         if (xMessageView < 0)
             xMessageView = 0;
 
+        resolveMessagePositionY();
 
-        //set message view bottom
-        if (targetRect.top + (indicatorHeight) > getHeight() / 2f) {
-            isMessageAtTop = false;
-            yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
-        }
-        //set message view top
-        else {
-            isMessageAtTop = true;
-            yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+        return new Point(xMessageView, yMessageView);
+    }
+
+    private void resolveMessagePositionY() {
+        switch (messageGravity) {
+            case AUTO: {
+                if (targetRect.top + (indicatorHeight) > getHeight() / 2f) {
+                    isMessageAtTop = false;
+                    yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+                }
+                else {
+                    isMessageAtTop = true;
+                    yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+                }
+                break;
+            }
+            case TOP: {
+                isMessageAtTop = false;
+                yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+                break;
+            }
+            case BOTTOM: {
+                isMessageAtTop = true;
+                yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+                break;
+            }
         }
 
         if (yMessageView < 0)
             yMessageView = 0;
-
-        return new Point(xMessageView, yMessageView);
     }
 
 
@@ -440,11 +458,16 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentTextSize(size);
     }
 
+    public void setMessageGravity(MessageGravity messageGravity) {
+        this.messageGravity = messageGravity;
+    }
+
 
     public static class Builder {
         private View targetView;
         private String title, contentText;
         private Gravity gravity;
+        private MessageGravity messageGravity;
         private DismissType dismissType;
         private Context context;
         private Spannable contentSpan;
@@ -475,6 +498,17 @@ public class GuideView extends FrameLayout {
          **/
         public Builder setGravity(Gravity gravity) {
             this.gravity = gravity;
+            return this;
+        }
+
+        /**
+         * Set position of message on screen in relation to highlighted view
+         * If gravity is AUTO, the message position is calculated automatically
+         *
+         * @param messageGravity message position
+         */
+        public Builder setMessageGravity(MessageGravity messageGravity) {
+            this.messageGravity = messageGravity;
             return this;
         }
 
@@ -636,6 +670,7 @@ public class GuideView extends FrameLayout {
             GuideView guideView = new GuideView(context);
             guideView.target = targetView;
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
+            guideView.messageGravity = messageGravity != null ? messageGravity : MessageGravity.AUTO;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
             float density = context.getResources().getDisplayMetrics().density;
 
@@ -657,6 +692,8 @@ public class GuideView extends FrameLayout {
             if (strokeCircleWidth != 0) {
                 guideView.circleStrokeWidth = strokeCircleWidth * density;
             }
+            if(dimColor != 0)
+                guideView.setDimColor(dimColor);
 
             guideView.init();
 
@@ -665,8 +702,6 @@ public class GuideView extends FrameLayout {
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
                 guideView.setTitleTextSize(titleTextSize);
-            if(dimColor != 0)
-                guideView.setDimColor(dimColor);
             if (contentTextSize != 0)
                 guideView.setContentTextSize(contentTextSize);
             if (contentSpan != null)
