@@ -462,6 +462,25 @@ public class GuideView extends FrameLayout {
         this.messageGravity = messageGravity;
     }
 
+    public void setMessageBackgroundColor(int color) {
+        this.mMessageView.setColor(color);
+    }
+
+    public void setMessageTitleColor(int color) {
+        this.mMessageView.setTitleColor(color);
+    }
+
+    public void setMessageContentColor(int color) {
+        this.mMessageView.setContentColor(color);
+    }
+
+    public void setMessageStrokeColor(int color) {
+        this.mMessageView.setStrokeColor(color);
+    }
+
+    public void setMessageStrokeWidth(float width) {
+        this.mMessageView.setStrokeWidth(width);
+    }
 
     public static class Builder {
         private View targetView;
@@ -473,14 +492,19 @@ public class GuideView extends FrameLayout {
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
-        private int titleTextSize;
-        private int contentTextSize;
         private int dimColor;
         private float lineIndicatorHeight;
         private float lineIndicatorWidthSize;
         private float circleIndicatorSize;
         private float circleInnerIndicatorSize;
         private float strokeCircleWidth;
+        private int titleTextSize;
+        private int contentTextSize;
+        private int messageBackgroundColor;
+        private int messageTitleColor;
+        private int messageContentColor;
+        private int messageStrokeColor;
+        private int messageStrokeWidth;
 
         public Builder(Context context) {
             this.context = context;
@@ -578,10 +602,6 @@ public class GuideView extends FrameLayout {
          * @param size title text by sp unit
          * @return builder
          */
-        public Builder setContentTextSize(int size) {
-            this.contentTextSize = size;
-            return this;
-        }
 
         /**
          * Changes default dim color
@@ -591,17 +611,6 @@ public class GuideView extends FrameLayout {
          */
         public Builder setDimColor(int color) {
             this.dimColor = color;
-            return this;
-        }
-
-        /**
-         * the defined text size overrides any defined size in the default or provided style
-         *
-         * @param size title text by sp unit
-         * @return builder
-         */
-        public Builder setTitleTextSize(int size) {
-            this.titleTextSize = size;
             return this;
         }
 
@@ -665,6 +674,52 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setTitleTextSize(int size) {
+            this.titleTextSize = size;
+            return this;
+        }
+
+        /**
+         * the defined text size overrides any defined size in the default or provided style
+         *
+         * @param size title text by sp unit
+         * @return builder
+         */
+        public Builder setContentTextSize(int size) {
+            this.contentTextSize = size;
+            return this;
+        }
+
+        /**
+         * Changes default message box background color
+         *
+         * @param color background color
+         * @return builder
+         */
+        public Builder setMessageBackgroundColor(int color) {
+            this.messageBackgroundColor = color;
+            return this;
+        }
+
+        public Builder setMessageTitleColor(int color) {
+            this.messageTitleColor = color;
+            return this;
+        }
+
+        public Builder setMessageContentColor(int color) {
+            this.messageContentColor = color;
+            return this;
+        }
+
+        public Builder setMessageStrokeColor(int color) {
+            this.messageStrokeColor = color;
+            return this;
+        }
+
+        public Builder setMessageStrokeWidth(int width) {
+            this.messageStrokeWidth = width;
+            return this;
+        }
 
         public GuideView build() {
             GuideView guideView = new GuideView(context);
@@ -712,8 +767,21 @@ public class GuideView extends FrameLayout {
             if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
             }
+            if(messageBackgroundColor != 0)
+                guideView.setMessageBackgroundColor(messageBackgroundColor);
+            if(messageTitleColor != 0)
+                guideView.setMessageTitleColor(messageTitleColor);
+            if(messageContentColor != 0) {
+                guideView.setMessageContentColor(messageContentColor);
+            }
+            if(messageStrokeColor != 0) {
+                guideView.setMessageStrokeColor(messageStrokeColor);
+            }
+            if(messageStrokeWidth != 0)
+                guideView.setMessageStrokeWidth(messageStrokeWidth);
 
-            return guideView;
+
+                return guideView;
         }
 
     }

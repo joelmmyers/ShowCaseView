@@ -20,6 +20,7 @@ import android.widget.TextView;
 class GuideMessageView extends LinearLayout {
 
     private Paint mPaint;
+    private Paint strokePaint;
     private RectF mRect;
 
     private TextView mTitleTextView;
@@ -37,6 +38,10 @@ class GuideMessageView extends LinearLayout {
         mRect = new RectF();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        strokePaint = new Paint();
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setStrokeWidth(0);
 
         final int padding = (int) (10 * density);
         final int paddingBetween = (int) (3 * density);
@@ -98,6 +103,22 @@ class GuideMessageView extends LinearLayout {
         invalidate();
     }
 
+    public void setTitleColor(int color) {
+        mTitleTextView.setTextColor(color);
+    }
+
+    public void setContentColor(int color) {
+        mContentTextView.setTextColor(color);
+    }
+
+    public void setStrokeColor(int color) {
+        strokePaint.setColor(color);
+    }
+
+    public void setStrokeWidth(float width) {
+        strokePaint.setStrokeWidth(width);
+    }
+
     int location[] = new int[2];
 
     @Override
@@ -115,5 +136,9 @@ class GuideMessageView extends LinearLayout {
 
 
         canvas.drawRoundRect(mRect, 15, 15, mPaint);
+
+        if(strokePaint.getStrokeWidth() > 0) {
+            canvas.drawRoundRect(mRect, 15, 15, strokePaint);
+        }
     }
 }
