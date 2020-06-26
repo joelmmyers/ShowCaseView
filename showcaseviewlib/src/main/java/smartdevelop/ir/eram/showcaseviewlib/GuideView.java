@@ -104,6 +104,13 @@ public class GuideView extends FrameLayout {
         initPaints();
 
         initMessageView();
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                startAnimationSize();
+            }
+        });
     }
 
     @Override
@@ -121,8 +128,6 @@ public class GuideView extends FrameLayout {
         guideMargin = (int) (isMessageAtTop ? guideMargin : -guideMargin);
         startYLineAndCircle = (isMessageAtTop ? targetRect.bottom : targetRect.top) + guideMargin;
         stopY = yMessageView + indicatorHeight;
-
-        startAnimationSize();
     }
 
     private void initParams() {
