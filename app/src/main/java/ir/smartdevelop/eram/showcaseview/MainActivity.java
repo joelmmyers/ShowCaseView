@@ -3,7 +3,6 @@ package ir.smartdevelop.eram.showcaseview;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
@@ -45,10 +44,14 @@ public class MainActivity extends AppCompatActivity {
                                 builder.setTargetView(view2).build();
                                 break;
                             case R.id.view2:
-                                builder.setTargetView(view3).build();
+                                builder.setTargetView(view3)
+                                        .setTitle(null)
+                                        .build();
                                 break;
                             case R.id.view3:
-                                builder.setTargetView(view4).build();
+                                builder.setTargetView(view4)
+                                        .setTitle("Guide Title Text")
+                                        .build();
                                 break;
                             case R.id.view4:
                                 builder.setTargetView(view5).build();

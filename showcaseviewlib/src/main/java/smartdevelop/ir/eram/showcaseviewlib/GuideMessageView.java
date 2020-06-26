@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 class GuideMessageView extends LinearLayout {
 
+    private static final int PADDING = 10;
+    private static final int SPACE_BETWEEN = -4;
+
     private Paint mPaint;
     private Paint strokePaint;
     private RectF mRect;
@@ -26,7 +29,7 @@ class GuideMessageView extends LinearLayout {
     private TextView mTitleTextView;
     private TextView mContentTextView;
 
-
+    // TODO customize padding and margins
     GuideMessageView(Context context) {
         super(context);
 
@@ -43,27 +46,35 @@ class GuideMessageView extends LinearLayout {
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setStrokeWidth(0);
 
-        final int padding = (int) (10 * density);
-        final int paddingBetween = (int) (3 * density);
+        final int padding = (int) (PADDING * density);
+        final int spacingBetween = (int) (SPACE_BETWEEN * density);
 
         mTitleTextView = new TextView(context);
-        mTitleTextView.setPadding(padding, padding, padding, paddingBetween);
+        mTitleTextView.setPadding(padding, padding, padding, spacingBetween);
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         mTitleTextView.setTextColor(Color.BLACK);
-        addView(mTitleTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LayoutParams titleLayoutParams = new LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        addView(mTitleTextView, titleLayoutParams);
 
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        mContentTextView.setPadding(padding, paddingBetween, padding, padding);
+        mContentTextView.setPadding(padding, padding, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
-        addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LayoutParams contentLayoutParams = new LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        addView(mContentTextView, contentLayoutParams);
     }
 
 
     public void setTitle(String title) {
-        if (title == null) {
+        if (title == null || title.isEmpty()) {
             removeView(mTitleTextView);
             return;
         }
@@ -119,7 +130,7 @@ class GuideMessageView extends LinearLayout {
         strokePaint.setStrokeWidth(width);
     }
 
-    int location[] = new int[2];
+    int[] location = new int[2];
 
     @Override
     protected void onDraw(Canvas canvas) {
