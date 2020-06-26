@@ -1,6 +1,7 @@
 package smartdevelop.ir.eram.showcaseviewlib;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -302,11 +303,21 @@ public class GuideView extends FrameLayout {
     }
 
     public void dismiss() {
-        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
-        mIsShowing = false;
-        if (mGuideListener != null) {
-            mGuideListener.onDismiss(target);
-        }
+        final View v = this;
+        this.animate()
+                .alpha(0f)
+                .setDuration(APPEARING_ANIMATION_DURATION)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
+                        mIsShowing = false;
+                        if (mGuideListener != null) {
+                            mGuideListener.onDismiss(target);
+                        }
+                    }
+                })
+                .start();
     }
 
     @SuppressLint("ClickableViewAccessibility")
