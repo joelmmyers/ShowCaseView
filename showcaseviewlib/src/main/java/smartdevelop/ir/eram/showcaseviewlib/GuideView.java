@@ -271,19 +271,10 @@ public class GuideView extends FrameLayout {
         super.onDraw(canvas);
         if (target == null) return;
 
+        // Draw dim background
         canvas.drawRect(selfRect, dimPaint);
 
-        final float x = (targetRect.left / 2 + targetRect.right / 2);
-
-        canvas.drawLine(x,
-                startYLineAndCircle,
-                x,
-                stopY,
-                linePaint);
-
-        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circleStrokePaint);
-        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleFillPaint);
-
+        // Cut transparent shape around target view
         if (highlightingShape == HighlightingShape.CIRCLE) {
             float circleX = (targetRect.left + targetRect.right) / 2;
             float circleY = (targetRect.top + targetRect.bottom) / 2;
@@ -295,6 +286,18 @@ public class GuideView extends FrameLayout {
                     highlightingRadius,
                     targetPaint);
         }
+
+        // Draw line and circle
+        final float x = (targetRect.left / 2 + targetRect.right / 2);
+
+        canvas.drawLine(x,
+                startYLineAndCircle,
+                x,
+                stopY,
+                linePaint);
+
+        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circleStrokePaint);
+        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleFillPaint);
     }
 
     public boolean isShowing() {
