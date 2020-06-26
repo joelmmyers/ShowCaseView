@@ -28,6 +28,7 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
 import smartdevelop.ir.eram.showcaseviewlib.config.HighlightingShape;
 import smartdevelop.ir.eram.showcaseviewlib.config.MessageGravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.SkipButtonPosition;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 /**
@@ -48,15 +49,18 @@ public class GuideView extends FrameLayout {
     private static final int RADIUS_SIZE_TARGET_RECT = 15;
     private static final int MARGIN_INDICATOR = 15;
 
-    private static final int DIM_COLOR_DEFAULT = 0x99000000;
+    private static final HighlightingShape HIGHLIGHTING_SHAPE = HighlightingShape.RECTANGLE;
+    private static final int DIM_COLOR = 0x99000000;
     private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
     private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
+    private static final SkipButtonPosition SKIP_BUTTON_POSITION = SkipButtonPosition.TOP_LEFT;
+
 
     private final Paint dimPaint = new Paint();
     private final Paint linePaint = new Paint();
-    private final Paint circleStrokePaint = new Paint();
-    private final Paint circleFillPaint = new Paint();
+    private final Paint circleStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint circleFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private View target;
@@ -69,6 +73,8 @@ public class GuideView extends FrameLayout {
     private int yMessageView;
 
     private float startYLineAndCircle;
+    private HighlightingShape highlightingShape;
+    private float highlightingRadius;
     private float circleIndicatorSize;
     private float circleIndicatorSizeFinal;
     private float circleInnerIndicatorSize;
@@ -77,15 +83,16 @@ public class GuideView extends FrameLayout {
     private int messageViewPadding;
     private float guideMargin;
     private float circleStrokeWidth;
-    private float highlightingRadius;
-    private HighlightingShape highlightingShape;
+
     private boolean isPerformedAnimationSize = false;
 
     private GuideListener mGuideListener;
     private Gravity mGravity;
     private MessageGravity messageGravity;
     private DismissType dismissType;
+
     private GuideMessageView mMessageView;
+    private GuideSkipView mSkipView;
 
     public GuideView(Context context) {
         this(context, null);
@@ -112,6 +119,7 @@ public class GuideView extends FrameLayout {
         initPaints();
 
         initMessageView();
+        initSkipView();
     }
 
     private void startAnimation() {
@@ -141,17 +149,18 @@ public class GuideView extends FrameLayout {
     }
 
     private void initParams() {
+        highlightingShape = HIGHLIGHTING_SHAPE;
+        highlightingRadius = RADIUS_SIZE_TARGET_RECT;
         lineWidth = LINE_INDICATOR_WIDTH_SIZE * density;
         guideMargin = MARGIN_INDICATOR * density;
         lineHeight = INDICATOR_HEIGHT * density;
         messageViewPadding = (int) (MESSAGE_VIEW_PADDING * density);
         circleStrokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
-        highlightingRadius = RADIUS_SIZE_TARGET_RECT;
     }
 
     private void initPaints() {
-        dimPaint.setColor(DIM_COLOR_DEFAULT);
+        dimPaint.setColor(DIM_COLOR);
         dimPaint.setStyle(Paint.Style.FILL);
         dimPaint.setAntiAlias(true);
 
@@ -181,7 +190,7 @@ public class GuideView extends FrameLayout {
                 locationTarget[1],
                 locationTarget[0] + target.getWidth(),
                 locationTarget[1] + target.getHeight());
-        if(highlightingShape == HighlightingShape.CIRCLE)
+        if (highlightingShape == HighlightingShape.CIRCLE)
             highlightingRadius = (int) calculateRadius(targetRect.height(), targetRect.width());
     }
 
@@ -198,6 +207,19 @@ public class GuideView extends FrameLayout {
         );
 
         addView(mMessageView, messageLayoutParams);
+    }
+
+    private void initSkipView() {
+        mSkipView = new GuideSkipView(getContext());
+
+        ViewGroup.LayoutParams skipLayoutParams = new LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        addView(mSkipView, skipLayoutParams);
+
+        mSkipView.setPosition(SkipButtonPosition.TOP_LEFT);
     }
 
     //TODO refactor
@@ -455,6 +477,16 @@ public class GuideView extends FrameLayout {
         mIsShowing = true;
     }
 
+    public void setHighlightingShape(HighlightingShape highlightingShape) {
+        this.highlightingShape = highlightingShape;
+    }
+
+    public void setHighlightingRadius(float radius) {
+        if (highlightingShape != HighlightingShape.CIRCLE) {
+            highlightingRadius = radius;
+        }
+    }
+
     public void setTitle(String str) {
         mMessageView.setTitle(str);
     }
@@ -537,13 +569,40 @@ public class GuideView extends FrameLayout {
         this.mMessageView.setStrokeWidth(width);
     }
 
-    public void setHighlightingRadius(float radius) {
-        if(highlightingShape != HighlightingShape.CIRCLE)
-            highlightingRadius = radius;
+    private void setWithSkipButton(boolean withSkipButton) {
+        this.mSkipView.setWithSkipButton(withSkipButton);
     }
 
-    public void setHighlightingShape(HighlightingShape highlightingShape) {
-        this.highlightingShape = highlightingShape;
+    private void setSkipButtonPosition(SkipButtonPosition position) {
+        this.mSkipView.setPosition(position);
+    }
+
+    private void setSkipButtonColor(int color) {
+        this.mSkipView.setColor(color);
+    }
+
+    private void setSkipButtonStrokeColor(int color) {
+        this.mSkipView.setStrokeColor(color);
+    }
+
+    private void setSkipButtonStrokeWidth(float width) {
+        this.mSkipView.setStrokeWidth(width);
+    }
+
+    private void setSkipButtonText(String text) {
+        this.mSkipView.setButtonText(text);
+    }
+
+    private void setSkipButtonTypeface(Typeface typeface) {
+        this.mSkipView.setButtonTypeface(typeface);
+    }
+
+    private void setSkipButtonTextSize(int size) {
+        this.mSkipView.setButtonTextSize(size);
+    }
+
+    private void setSkipButtonTextColor(int color) {
+        this.mSkipView.setButtonTextColor(color);
     }
 
     private float calculateRadius(float height, float width) {
@@ -577,6 +636,15 @@ public class GuideView extends FrameLayout {
         private int messageContentColor;
         private int messageStrokeColor;
         private float messageStrokeWidth;
+        private boolean withSkipButton;
+        private SkipButtonPosition skipButtonPosition;
+        private int skipButtonColor;
+        private int skipButtonStrokeColor;
+        private float skipButtonStrokeWidth;
+        private String skipButtonText;
+        private Typeface skipButtonTypeface;
+        private int skipButtonTextSize;
+        private int skipButtonTextColor;
 
         public Builder(Context context) {
             this.context = context;
@@ -809,6 +877,51 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder withSkipButton(boolean withSkipButton) {
+            this.withSkipButton = withSkipButton;
+            return this;
+        }
+
+        public Builder setSkipButtonPosition(SkipButtonPosition position) {
+            this.skipButtonPosition = position;
+            return this;
+        }
+
+        public Builder setSkipButtonColor(int color) {
+            this.skipButtonColor = color;
+            return this;
+        }
+
+        public Builder setSkipButtonStrokeColor(int color) {
+            this.skipButtonStrokeColor = color;
+            return this;
+        }
+
+        public Builder setSkipButtonStrokeWidth(float width) {
+            this.skipButtonStrokeWidth = width;
+            return this;
+        }
+
+        public Builder setSkipButtonText(String text) {
+            this.skipButtonText = text;
+            return this;
+        }
+
+        public Builder setSkipButtonTypeface(Typeface typeface) {
+            this.skipButtonTypeface = typeface;
+            return this;
+        }
+
+        public Builder setSkipButtonTextSize(int size) {
+            this.skipButtonTextSize = size;
+            return this;
+        }
+
+        public Builder setSkipButtonTextColor(int color) {
+            this.skipButtonTextColor = color;
+            return this;
+        }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context);
             guideView.target = targetView;
@@ -827,6 +940,12 @@ public class GuideView extends FrameLayout {
 
             guideView.setTitle(title);
 
+            if (highlightingShape != null) {
+                guideView.setHighlightingShape(highlightingShape);
+            }
+            if (highlightingRadius != 0) {
+                guideView.setHighlightingRadius(highlightingRadius);
+            }
             if (circleSize != 0)
                 guideView.circleIndicatorSizeFinal = circleSize * density;
             if (circleStrokeWidth != 0)
@@ -855,22 +974,43 @@ public class GuideView extends FrameLayout {
             if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
             }
-            if (messageBackgroundColor != 0)
+            if (messageBackgroundColor != 0) {
                 guideView.setMessageBackgroundColor(messageBackgroundColor);
-            if (messageTitleColor != 0)
+            }
+            if (messageTitleColor != 0) {
                 guideView.setMessageTitleColor(messageTitleColor);
+            }
             if (messageContentColor != 0) {
                 guideView.setMessageContentColor(messageContentColor);
             }
             if (messageStrokeColor != 0) {
                 guideView.setMessageStrokeColor(messageStrokeColor);
             }
-            if (messageStrokeWidth != 0)
+            if (messageStrokeWidth != 0) {
                 guideView.setMessageStrokeWidth(messageStrokeWidth);
-
-            guideView.setHighlightingShape(highlightingShape != null ? highlightingShape : HighlightingShape.RECTANGLE);
-            if(highlightingRadius != 0)
-                guideView.setHighlightingRadius(highlightingRadius);
+            }
+            guideView.setWithSkipButton(withSkipButton);
+            if (skipButtonPosition != null) {
+                guideView.setSkipButtonPosition(skipButtonPosition);
+            }
+            if (skipButtonColor != 0) {
+                guideView.setSkipButtonColor(skipButtonColor);
+            }
+            if (skipButtonStrokeColor != 0) {
+                guideView.setSkipButtonStrokeColor(skipButtonStrokeColor);
+            }
+            if (skipButtonStrokeWidth != 0) {
+                guideView.setSkipButtonStrokeWidth(skipButtonStrokeWidth);
+            }
+            if (skipButtonText != null) {
+                guideView.setSkipButtonText(skipButtonText);
+            }
+            if (skipButtonTextSize != 0) {
+                guideView.setSkipButtonTextSize(skipButtonTextSize);
+            }
+            if (skipButtonTextColor != 0) {
+                guideView.setSkipButtonTextColor(skipButtonTextColor);
+            }
 
             guideView.startAnimation();
             return guideView;

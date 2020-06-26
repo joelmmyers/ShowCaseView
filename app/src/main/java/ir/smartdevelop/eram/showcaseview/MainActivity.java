@@ -7,6 +7,7 @@ import android.view.View;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.SkipButtonPosition;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.selfView)
                 .setTargetView(view1)
+                .withSkipButton(true)
+                .setSkipButtonText("Skip")
+                .setSkipButtonPosition(SkipButtonPosition.TOP_RIGHT)
                 .setGuideListener(new GuideListener() {
                     @Override
                     public void onDismiss(View view) {

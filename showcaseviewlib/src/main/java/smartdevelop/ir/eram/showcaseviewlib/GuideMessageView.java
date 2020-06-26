@@ -23,7 +23,7 @@ class GuideMessageView extends LinearLayout {
     private static final int SPACE_BETWEEN = -4;
 
     private Paint mPaint;
-    private Paint strokePaint;
+    private Paint mStrokePaint;
     private RectF mRect;
 
     private TextView mTitleTextView;
@@ -39,12 +39,15 @@ class GuideMessageView extends LinearLayout {
         setGravity(Gravity.CENTER);
 
         mRect = new RectF();
+
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        strokePaint = new Paint();
-        strokePaint.setStyle(Paint.Style.STROKE);
-        strokePaint.setStrokeWidth(0);
+        mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mStrokePaint.setStyle(Paint.Style.STROKE);
+        mStrokePaint.setStrokeCap(Paint.Cap.ROUND);
+        mStrokePaint.setStrokeWidth(0);
 
         final int padding = (int) (PADDING * density);
         final int spacingBetween = (int) (SPACE_BETWEEN * density);
@@ -72,7 +75,6 @@ class GuideMessageView extends LinearLayout {
         addView(mContentTextView, contentLayoutParams);
     }
 
-
     public void setTitle(String title) {
         if (title == null || title.isEmpty()) {
             removeView(mTitleTextView);
@@ -80,7 +82,6 @@ class GuideMessageView extends LinearLayout {
         }
         mTitleTextView.setText(title);
     }
-
 
     public void setContentText(String content) {
         mContentTextView.setText(content);
@@ -107,10 +108,18 @@ class GuideMessageView extends LinearLayout {
     }
 
     public void setColor(int color) {
-
         mPaint.setAlpha(255);
         mPaint.setColor(color);
+        invalidate();
+    }
 
+    public void setStrokeColor(int color) {
+        mStrokePaint.setColor(color);
+        invalidate();
+    }
+
+    public void setStrokeWidth(float width) {
+        mStrokePaint.setStrokeWidth(width);
         invalidate();
     }
 
@@ -122,34 +131,24 @@ class GuideMessageView extends LinearLayout {
         mContentTextView.setTextColor(color);
     }
 
-    public void setStrokeColor(int color) {
-        strokePaint.setColor(color);
-    }
+    private int[] location = new int[2];
 
-    public void setStrokeWidth(float width) {
-        strokePaint.setStrokeWidth(width);
-    }
-
-    int[] location = new int[2];
-
+    // TODO customizable colors
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-
         this.getLocationOnScreen(location);
-
 
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
                 getWidth() - getPaddingRight(),
                 getHeight() - getPaddingBottom());
 
-
         canvas.drawRoundRect(mRect, 15, 15, mPaint);
 
-        if(strokePaint.getStrokeWidth() > 0) {
-            canvas.drawRoundRect(mRect, 15, 15, strokePaint);
+        if(mStrokePaint.getStrokeWidth() > 0) {
+            canvas.drawRoundRect(mRect, 15, 15, mStrokePaint);
         }
     }
 }
