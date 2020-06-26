@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.HighlightingShape;
 import smartdevelop.ir.eram.showcaseviewlib.config.MessageGravity;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
@@ -76,7 +77,8 @@ public class GuideView extends FrameLayout {
     private int messageViewPadding;
     private float guideMargin;
     private float circleStrokeWidth;
-
+    private int highlightingRadius;
+    private HighlightingShape highlightingShape;
     private boolean isPerformedAnimationSize = false;
 
     private GuideListener mGuideListener;
@@ -145,6 +147,7 @@ public class GuideView extends FrameLayout {
         messageViewPadding = (int) (MESSAGE_VIEW_PADDING * density);
         circleStrokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
+        highlightingRadius = RADIUS_SIZE_TARGET_RECT;
     }
 
     private void initPaints() {
@@ -178,6 +181,8 @@ public class GuideView extends FrameLayout {
                 locationTarget[1],
                 locationTarget[0] + target.getWidth(),
                 locationTarget[1] + target.getHeight());
+        if(highlightingShape == HighlightingShape.CIRCLE)
+            highlightingRadius = (int) calculateRadius(targetRect.height(), targetRect.width());
     }
 
     private void initMessageView() {
@@ -279,7 +284,17 @@ public class GuideView extends FrameLayout {
         canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circleStrokePaint);
         canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleFillPaint);
 
-        canvas.drawRoundRect(targetRect, RADIUS_SIZE_TARGET_RECT, RADIUS_SIZE_TARGET_RECT, targetPaint);
+        if (highlightingShape == HighlightingShape.CIRCLE) {
+            float circleX = (targetRect.left + targetRect.right) / 2;
+            float circleY = (targetRect.top + targetRect.bottom) / 2;
+            canvas.drawCircle(circleX, circleY, highlightingRadius, targetPaint);
+        } else {
+            canvas.drawRoundRect(
+                    targetRect,
+                    highlightingRadius,
+                    highlightingRadius,
+                    targetPaint);
+        }
     }
 
     public boolean isShowing() {
@@ -383,8 +398,7 @@ public class GuideView extends FrameLayout {
                 if (targetRect.top + (lineHeight) > getHeight() / 2f) {
                     isMessageAtTop = false;
                     yMessageView = (int) (targetRect.top - mMessageView.getHeight() - lineHeight);
-                }
-                else {
+                } else {
                     isMessageAtTop = true;
                     yMessageView = (int) (targetRect.top + target.getHeight() + lineHeight);
                 }
@@ -508,6 +522,19 @@ public class GuideView extends FrameLayout {
         this.mMessageView.setStrokeWidth(width);
     }
 
+    public void setHighlightingRadius(int radius) {
+        if(highlightingShape != HighlightingShape.CIRCLE)
+            highlightingRadius = radius;
+    }
+
+    public void setHighlightingShape(HighlightingShape highlightingShape) {
+        this.highlightingShape = highlightingShape;
+    }
+
+    private float calculateRadius(float height, float width) {
+        return (float) Math.sqrt(Math.pow(height, 2) + Math.pow(width, 2)) / 2;
+    }
+
     public static class Builder {
         private View targetView;
         private String title, contentText;
@@ -526,6 +553,8 @@ public class GuideView extends FrameLayout {
         private float circleStrokeWidth;
         private int circleColor;
         private int circleStrokeColor;
+        private int highlightingRadius;
+        private HighlightingShape highlightingShape;
         private int titleTextSize;
         private int contentTextSize;
         private int messageBackgroundColor;
@@ -708,6 +737,16 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setHighlightingRadius(int radius) {
+            this.highlightingRadius = radius;
+            return this;
+        }
+
+        public Builder setHighlightingShape(HighlightingShape highlightedShape) {
+            this.highlightingShape = highlightedShape;
+            return this;
+        }
+
         public Builder setTitleTextSize(int size) {
             this.titleTextSize = size;
             return this;
@@ -766,28 +805,26 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
-            if(dimColor != 0)
+            if (dimColor != 0)
                 guideView.setDimColor(dimColor);
 
             guideView.init();
 
             guideView.setTitle(title);
 
-            if (circleSize != 0) {
+            if (circleSize != 0)
                 guideView.circleIndicatorSizeFinal = circleSize * density;
-            }
-            if (circleStrokeWidth != 0) {
+            if (circleStrokeWidth != 0)
                 guideView.setCircleStrokeWidth(circleStrokeWidth);
-            }
-            if(lineColor != 0)
+            if (lineColor != 0)
                 guideView.setLineColor(lineColor);
             if (lineHeight != 0)
                 guideView.setLineHeight(lineHeight);
             if (lineWidth != 0)
                 guideView.setLineWidth(lineWidth);
-            if(circleStrokeColor != 0)
+            if (circleStrokeColor != 0)
                 guideView.setCircleStrokeColor(circleStrokeColor);
-            if(circleColor != 0)
+            if (circleColor != 0)
                 guideView.setCircleColor(circleColor);
             if (contentText != null)
                 guideView.setContentText(contentText);
@@ -803,21 +840,25 @@ public class GuideView extends FrameLayout {
             if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
             }
-            if(messageBackgroundColor != 0)
+            if (messageBackgroundColor != 0)
                 guideView.setMessageBackgroundColor(messageBackgroundColor);
-            if(messageTitleColor != 0)
+            if (messageTitleColor != 0)
                 guideView.setMessageTitleColor(messageTitleColor);
-            if(messageContentColor != 0) {
+            if (messageContentColor != 0) {
                 guideView.setMessageContentColor(messageContentColor);
             }
-            if(messageStrokeColor != 0) {
+            if (messageStrokeColor != 0) {
                 guideView.setMessageStrokeColor(messageStrokeColor);
             }
-            if(messageStrokeWidth != 0)
+            if (messageStrokeWidth != 0)
                 guideView.setMessageStrokeWidth(messageStrokeWidth);
 
+            guideView.setHighlightingShape(highlightingShape != null ? highlightingShape : HighlightingShape.RECTANGLE);
+            if(highlightingRadius != 0)
+                guideView.setHighlightingRadius(highlightingRadius);
+
             guideView.startAnimation();
-                return guideView;
+            return guideView;
         }
 
     }
