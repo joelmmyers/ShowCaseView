@@ -93,11 +93,15 @@ public class GuideView extends FrameLayout {
 
     public GuideView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setup();
+    }
+
+    private void setup() {
+        setWillNotDraw(false);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     private void init() {
-        setWillNotDraw(false);
-
         density = getResources().getDisplayMetrics().density;
 
         initParams();
