@@ -56,7 +56,6 @@ public class GuideView extends FrameLayout {
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
     private static final SkipButtonPosition SKIP_BUTTON_POSITION = SkipButtonPosition.TOP_LEFT;
 
-
     private final Paint dimPaint = new Paint();
     private final Paint linePaint = new Paint();
     private final Paint circleStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -199,7 +198,6 @@ public class GuideView extends FrameLayout {
         mMessageView.setPadding(
                 messageViewPadding, messageViewPadding,
                 messageViewPadding, messageViewPadding);
-        mMessageView.setColor(Color.WHITE);
 
         ViewGroup.LayoutParams messageLayoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -219,7 +217,7 @@ public class GuideView extends FrameLayout {
 
         addView(mSkipView, skipLayoutParams);
 
-        mSkipView.setPosition(SkipButtonPosition.TOP_LEFT);
+        mSkipView.setPosition(SKIP_BUTTON_POSITION);
     }
 
     //TODO refactor
@@ -577,6 +575,18 @@ public class GuideView extends FrameLayout {
         this.mSkipView.setPosition(position);
     }
 
+    private void setSkipButtonMargin(int margin) {
+        this.mSkipView.setButtonMargin(margin);
+    }
+
+    private void setSkipButtonPaddingHorizontal(int padding) {
+        this.mSkipView.setButtonPaddingHorizontal(padding);
+    }
+
+    private void setSkipButtonPaddingVertical(int padding) {
+        this.mSkipView.setButtonPaddingVertical(padding);
+    }
+
     private void setSkipButtonColor(int color) {
         this.mSkipView.setColor(color);
     }
@@ -638,6 +648,9 @@ public class GuideView extends FrameLayout {
         private float messageStrokeWidth;
         private boolean withSkipButton;
         private SkipButtonPosition skipButtonPosition;
+        private int skipButtonMargin;
+        private int skipButtonPaddingHorizontal;
+        private int skipButtonPaddingVertical;
         private int skipButtonColor;
         private int skipButtonStrokeColor;
         private float skipButtonStrokeWidth;
@@ -887,6 +900,21 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setSkipButtonMargin(int margin) {
+            this.skipButtonMargin = margin;
+            return this;
+        }
+
+        public Builder setSkipButtonPaddingHorizontal(int padding) {
+            this.skipButtonPaddingHorizontal = padding;
+            return this;
+        }
+
+        public Builder setSkipButtonPaddingVertical(int padding) {
+            this.skipButtonPaddingVertical = padding;
+            return this;
+        }
+
         public Builder setSkipButtonColor(int color) {
             this.skipButtonColor = color;
             return this;
@@ -993,6 +1021,15 @@ public class GuideView extends FrameLayout {
             if (skipButtonPosition != null) {
                 guideView.setSkipButtonPosition(skipButtonPosition);
             }
+            if (skipButtonMargin != 0) {
+                guideView.setSkipButtonMargin(skipButtonMargin);
+            }
+            if (skipButtonPaddingHorizontal != 0) {
+                guideView.setSkipButtonPaddingHorizontal(skipButtonPaddingHorizontal);
+            }
+            if (skipButtonPaddingVertical != 0) {
+                guideView.setSkipButtonPaddingVertical(skipButtonPaddingVertical);
+            }
             if (skipButtonColor != 0) {
                 guideView.setSkipButtonColor(skipButtonColor);
             }
@@ -1004,6 +1041,9 @@ public class GuideView extends FrameLayout {
             }
             if (skipButtonText != null) {
                 guideView.setSkipButtonText(skipButtonText);
+            }
+            if (skipButtonTypeface != null) {
+                guideView.setSkipButtonTypeface(skipButtonTypeface);
             }
             if (skipButtonTextSize != 0) {
                 guideView.setSkipButtonTextSize(skipButtonTextSize);

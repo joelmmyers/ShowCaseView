@@ -1,7 +1,9 @@
 package smartdevelop.ir.eram.showcaseviewlib;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -17,7 +19,15 @@ import smartdevelop.ir.eram.showcaseviewlib.config.SkipButtonPosition;
 
 class GuideSkipView extends FrameLayout {
 
+    private static final int COLOR = 0x44ffffff;
+    private static final int STROKE_COLOR = Color.WHITE;
+    private static final int STROKE_WIDTH = 1;
+    private static final int TEXT_COLOR = Color.WHITE;
+
     private static final int PADDING = 12;
+
+    private static final int PADDING_HORIZONTAL = 32;
+    private static final int PADDING_VERTICAL = 10;
 
     private Paint mPaint;
     private Paint mStrokePaint;
@@ -27,6 +37,8 @@ class GuideSkipView extends FrameLayout {
 
     GuideSkipView(Context context) {
         super(context);
+
+        setWillNotDraw(false);
 
         float density = getResources().getDisplayMetrics().density;
 
@@ -41,28 +53,40 @@ class GuideSkipView extends FrameLayout {
         mStrokePaint.setStrokeCap(Paint.Cap.ROUND);
         mStrokePaint.setStrokeWidth(0);
 
-        setPadding(PADDING, PADDING, PADDING, PADDING);
+        setButtonMargin((int) (density * PADDING));
 
         mSkipButton = new Button(context);
+        mSkipButton.setMinWidth(0);
+        mSkipButton.setMinimumWidth(0);
+        mSkipButton.setMinHeight(0);
+        mSkipButton.setMinimumHeight(0);
+        mSkipButton.setBackground(null);
         mSkipButton.setGravity(Gravity.CENTER);
+        mSkipButton.setAllCaps(false);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        layoutParams.setMargins(0, getStatusBarSize(), 0, 0);
         addView(mSkipButton, layoutParams);
+
+        setButtonPaddingHorizontal((int) (density * PADDING_HORIZONTAL));
+        setButtonPaddingVertical((int) (density * PADDING_VERTICAL));
+        setColor(COLOR);
+        setStrokeColor(STROKE_COLOR);
+        setStrokeWidth(density * STROKE_WIDTH);
+        setButtonTextColor(TEXT_COLOR);
     }
 
     public void setWithSkipButton(boolean withSkipButton) {
         int visibility;
         if (withSkipButton) visibility = View.VISIBLE;
         else visibility = View.GONE;
-
         setVisibility(visibility);
     }
 
+    @SuppressLint("RtlHardcoded")
     public void setPosition(SkipButtonPosition position) {
-        int gravity = Gravity.TOP | Gravity.LEFT;
+        int gravity;
         switch (position) {
             case TOP_LEFT:
                 gravity = Gravity.TOP | Gravity.LEFT;
@@ -76,6 +100,8 @@ class GuideSkipView extends FrameLayout {
             case BOTTOM_RIGHT:
                 gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + position);
         }
         setPositionAsGravity(gravity);
     }
@@ -84,6 +110,10 @@ class GuideSkipView extends FrameLayout {
         LayoutParams params = (LayoutParams) getLayoutParams();
         params.gravity = gravity;
         setLayoutParams(params);
+    }
+
+    public void setButtonMargin(int margin) {
+        setPadding(margin, margin + getStatusBarSize(), margin, margin);
     }
 
     public void setColor(int color) {
@@ -100,6 +130,24 @@ class GuideSkipView extends FrameLayout {
     public void setStrokeWidth(float width) {
         mStrokePaint.setStrokeWidth(width);
         invalidate();
+    }
+
+    public void setButtonPaddingHorizontal(int padding) {
+        mSkipButton.setPadding(
+                padding,
+                mSkipButton.getPaddingTop(),
+                padding,
+                mSkipButton.getPaddingBottom()
+        );
+    }
+
+    public void setButtonPaddingVertical(int padding) {
+        mSkipButton.setPadding(
+                mSkipButton.getPaddingLeft(),
+                padding,
+                mSkipButton.getPaddingRight(),
+                padding
+        );
     }
 
     public void setButtonText(String text) {
@@ -129,7 +177,7 @@ class GuideSkipView extends FrameLayout {
 
     private int[] location = new int[2];
 
-    // TODO customizable colors
+    // TODO customizable radius
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

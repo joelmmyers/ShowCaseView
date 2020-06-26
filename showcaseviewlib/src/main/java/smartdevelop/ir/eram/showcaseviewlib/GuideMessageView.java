@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 class GuideMessageView extends LinearLayout {
 
+    private static final int COLOR = Color.WHITE;
     private static final int PADDING = 10;
     private static final int SPACE_BETWEEN = -4;
 
@@ -73,6 +74,8 @@ class GuideMessageView extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         addView(mContentTextView, contentLayoutParams);
+
+        setColor(COLOR);
     }
 
     public void setTitle(String title) {
@@ -133,7 +136,7 @@ class GuideMessageView extends LinearLayout {
 
     private int[] location = new int[2];
 
-    // TODO customizable colors
+    // TODO customizable radius
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
