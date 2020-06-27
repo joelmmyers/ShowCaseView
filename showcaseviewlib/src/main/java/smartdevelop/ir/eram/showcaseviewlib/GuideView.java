@@ -456,6 +456,10 @@ public class GuideView extends FrameLayout {
     }
 
     public void dismiss() {
+        dismiss(true);
+    }
+
+    public void dismiss(final boolean withCallback) {
         if (!mIsShowing) return;
 
         animate()
@@ -465,7 +469,7 @@ public class GuideView extends FrameLayout {
                     @Override
                     public void run() {
                         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
-                        if (mGuideListener != null) {
+                        if (mGuideListener != null && withCallback) {
                             mGuideListener.onDismiss(target);
                         }
                     }
