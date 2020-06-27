@@ -86,6 +86,7 @@ public class GuideView extends FrameLayout {
     private boolean isPerformedAnimationSize = false;
 
     private GuideListener mGuideListener;
+    private GuideSkipListener mGuideSkipListener;
     private Gravity mGravity;
     private MessageGravity messageGravity;
     private DismissType dismissType;
@@ -216,6 +217,13 @@ public class GuideView extends FrameLayout {
         addView(mSkipView, skipLayoutParams);
 
         mSkipView.setPosition(SKIP_BUTTON_POSITION);
+
+        this.mSkipView.setOnSkipListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss(true);
+            }
+        });
     }
 
     //TODO refactor
@@ -456,10 +464,10 @@ public class GuideView extends FrameLayout {
     }
 
     public void dismiss() {
-        dismiss(true);
+        dismiss(false);
     }
 
-    public void dismiss(final boolean withCallback) {
+    public void dismiss(final boolean isSkip) {
         if (!mIsShowing) return;
 
         animate()
@@ -468,15 +476,21 @@ public class GuideView extends FrameLayout {
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
-                        if (mGuideListener != null && withCallback) {
-                            mGuideListener.onDismiss(target);
-                        }
+                        dismissSelf(isSkip);
                     }
                 })
                 .start();
 
         mIsShowing = false;
+    }
+
+    private void dismissSelf(boolean isSkip) {
+        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
+        if (isSkip) {
+            if (mGuideListener != null) mGuideListener.onDismiss(target);
+        } else {
+            if (mGuideSkipListener != null) mGuideSkipListener.onSkip(GuideView.this);
+        }
     }
 
     public void setHighlightingShape(HighlightingShape highlightingShape) {
@@ -573,15 +587,6 @@ public class GuideView extends FrameLayout {
 
     private void setWithSkipButton(boolean withSkipButton) {
         this.mSkipView.setWithSkipButton(withSkipButton);
-    }
-
-    private void setGuideSkipListener(final GuideSkipListener listener) {
-        this.mSkipView.setOnSkipListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onSkip(GuideView.this);
-            }
-        });
     }
 
     private void setSkipButtonPosition(SkipButtonPosition position) {
@@ -1037,9 +1042,7 @@ public class GuideView extends FrameLayout {
                 guideView.setMessageStrokeWidth(messageStrokeWidth);
             }
             guideView.setWithSkipButton(withSkipButton);
-            if (guideSkipListener != null) {
-                guideView.setGuideSkipListener(guideSkipListener);
-            }
+            guideView.mGuideSkipListener = guideSkipListener;
             if (skipButtonPosition != null) {
                 guideView.setSkipButtonPosition(skipButtonPosition);
             }
