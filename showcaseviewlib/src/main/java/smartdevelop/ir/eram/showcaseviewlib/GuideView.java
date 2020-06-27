@@ -30,6 +30,7 @@ import smartdevelop.ir.eram.showcaseviewlib.config.HighlightingShape;
 import smartdevelop.ir.eram.showcaseviewlib.config.MessageGravity;
 import smartdevelop.ir.eram.showcaseviewlib.config.SkipButtonPosition;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideSkipListener;
 
 /**
  * Created by Mohammad Reza Eram on 20/01/2018.
@@ -41,8 +42,10 @@ public class GuideView extends FrameLayout {
 
     private static final int INDICATOR_HEIGHT = 40;
     private static final int MESSAGE_VIEW_PADDING = 5;
+
     private static final int SIZE_ANIMATION_DURATION = 700;
-    private static final int APPEARING_ANIMATION_DURATION = 400;
+    private static final int SHOW_HIDE_ANIMATION_DURATION = 400;
+
     private static final int CIRCLE_INDICATOR_SIZE = 6;
     private static final int LINE_INDICATOR_WIDTH_SIZE = 3;
     private static final int STROKE_CIRCLE_INDICATOR_SIZE = 3;
@@ -325,21 +328,23 @@ public class GuideView extends FrameLayout {
     }
 
     public void dismiss() {
-        final View v = this;
-        this.animate()
+        if (!mIsShowing) return;
+
+        animate()
                 .alpha(0f)
-                .setDuration(APPEARING_ANIMATION_DURATION)
+                .setDuration(SHOW_HIDE_ANIMATION_DURATION)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
                         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
-                        mIsShowing = false;
                         if (mGuideListener != null) {
                             mGuideListener.onDismiss(target);
                         }
                     }
                 })
                 .start();
+
+        mIsShowing = false;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -455,8 +460,9 @@ public class GuideView extends FrameLayout {
             yMessageView = 0;
     }
 
-
     public void show() {
+        if (mIsShowing) return;
+
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
@@ -468,7 +474,7 @@ public class GuideView extends FrameLayout {
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
 
         AlphaAnimation startAnimation = new AlphaAnimation(0.0f, 1.0f);
-        startAnimation.setDuration(APPEARING_ANIMATION_DURATION);
+        startAnimation.setDuration(SHOW_HIDE_ANIMATION_DURATION);
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
 
@@ -571,6 +577,10 @@ public class GuideView extends FrameLayout {
         this.mSkipView.setWithSkipButton(withSkipButton);
     }
 
+    private void setGuideSkipListener(GuideSkipListener listener) {
+        this.mSkipView.setGuideSkipListener(listener);
+    }
+
     private void setSkipButtonPosition(SkipButtonPosition position) {
         this.mSkipView.setPosition(position);
     }
@@ -647,6 +657,7 @@ public class GuideView extends FrameLayout {
         private int messageStrokeColor;
         private float messageStrokeWidth;
         private boolean withSkipButton;
+        private GuideSkipListener guideSkipListener;
         private SkipButtonPosition skipButtonPosition;
         private int skipButtonMargin;
         private int skipButtonPaddingHorizontal;
@@ -890,8 +901,13 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
-        public Builder withSkipButton(boolean withSkipButton) {
+        public Builder setWithSkipButton(boolean withSkipButton) {
             this.withSkipButton = withSkipButton;
+            return this;
+        }
+
+        public Builder setGuideSkipListener(GuideSkipListener listener) {
+            this.guideSkipListener = listener;
             return this;
         }
 
@@ -1018,6 +1034,9 @@ public class GuideView extends FrameLayout {
                 guideView.setMessageStrokeWidth(messageStrokeWidth);
             }
             guideView.setWithSkipButton(withSkipButton);
+            if (guideSkipListener != null) {
+                guideView.setGuideSkipListener(guideSkipListener);
+            }
             if (skipButtonPosition != null) {
                 guideView.setSkipButtonPosition(skipButtonPosition);
             }

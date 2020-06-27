@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.selfView)
                 .setTargetView(view1)
-                .withSkipButton(true)
+                .setWithSkipButton(true)
                 .setSkipButtonText("Skip")
                 .setSkipButtonPosition(SkipButtonPosition.TOP_RIGHT)
                 .setGuideListener(new GuideListener() {
