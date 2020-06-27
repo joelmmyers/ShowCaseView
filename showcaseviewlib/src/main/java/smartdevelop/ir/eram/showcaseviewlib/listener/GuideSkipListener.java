@@ -1,5 +1,7 @@
 package smartdevelop.ir.eram.showcaseviewlib.listener;
 
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+
 public interface GuideSkipListener {
-    void onSkip();
+    void onSkip(GuideView guideView);
 }

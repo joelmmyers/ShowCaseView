@@ -577,8 +577,13 @@ public class GuideView extends FrameLayout {
         this.mSkipView.setWithSkipButton(withSkipButton);
     }
 
-    private void setGuideSkipListener(GuideSkipListener listener) {
-        this.mSkipView.setGuideSkipListener(listener);
+    private void setGuideSkipListener(final GuideSkipListener listener) {
+        this.mSkipView.setOnSkipListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSkip(GuideView.this);
+            }
+        });
     }
 
     private void setSkipButtonPosition(SkipButtonPosition position) {

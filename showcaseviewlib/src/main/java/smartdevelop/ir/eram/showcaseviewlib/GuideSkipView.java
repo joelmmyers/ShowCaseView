@@ -85,13 +85,8 @@ class GuideSkipView extends FrameLayout {
         setVisibility(visibility);
     }
 
-    public void setGuideSkipListener(final GuideSkipListener listener) {
-        mSkipButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onSkip();
-            }
-        });
+    public void setOnSkipListener(final OnClickListener listener) {
+        mSkipButton.setOnClickListener(listener);
     }
 
     @SuppressLint("RtlHardcoded")
