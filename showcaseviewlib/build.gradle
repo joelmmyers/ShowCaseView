@@ -2,15 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.mreram'
 android {
-    compileSdkVersion 26
-
-
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 3
-        versionName "1.5"
+        versionCode 4
+        versionName "1.6"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -39,6 +37,4 @@ makeShowCaseView.dependsOn(clearJar, build)
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-
 }
