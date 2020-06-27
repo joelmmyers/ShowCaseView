@@ -505,6 +505,10 @@ public class GuideView extends FrameLayout {
         mMessageView.setTitle(str);
     }
 
+    public void setMessagePadding(int padding) {
+        mMessageView.setPadding(padding, padding, padding, padding);
+    }
+
     public void setContentText(String str) {
         mMessageView.setContentText(str);
     }
@@ -653,6 +657,7 @@ public class GuideView extends FrameLayout {
         private int circleStrokeColor;
         private float highlightingRadius;
         private HighlightingShape highlightingShape;
+        private int messagePadding = -1;
         private int titleTextSize;
         private int contentTextSize;
         private int messageBackgroundColor;
@@ -851,6 +856,11 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setMessagePadding(int padding) {
+            this.messagePadding = padding;
+            return this;
+        }
+
         public Builder setTitleTextSize(int size) {
             this.titleTextSize = size;
             return this;
@@ -1000,6 +1010,8 @@ public class GuideView extends FrameLayout {
                 guideView.setCircleStrokeColor(circleStrokeColor);
             if (circleColor != 0)
                 guideView.setCircleColor(circleColor);
+            if (messagePadding >= 0)
+                guideView.setMessagePadding(messagePadding);
             if (contentText != null)
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)

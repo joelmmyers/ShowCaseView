@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.selfView)
                 .setTargetView(view1)
+                .setMessagePadding(100)
                 .setMessageStrokeWidth(10)
                 .setMessageStrokeColor(Color.BLUE)
                 .setWithSkipButton(true)
