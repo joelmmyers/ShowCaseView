@@ -25,8 +25,6 @@ class GuideMessageView extends LinearLayout {
     private static final int CORNERS = 15;
     private static final int SPACE_BETWEEN = 6;
 
-    float density;
-
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF mRect = new RectF();
@@ -37,8 +35,6 @@ class GuideMessageView extends LinearLayout {
     // TODO customize padding and margins
     GuideMessageView(Context context) {
         super(context);
-
-        density = context.getResources().getDisplayMetrics().density;
 
         setWillNotDraw(false);
         setOrientation(VERTICAL);
@@ -61,6 +57,8 @@ class GuideMessageView extends LinearLayout {
     }
 
     private void initViews() {
+        float density = getResources().getDisplayMetrics().density;
+
         final int padding = (int) (PADDING * density);
         final int spacingBetween = (int) (SPACE_BETWEEN * density);
 

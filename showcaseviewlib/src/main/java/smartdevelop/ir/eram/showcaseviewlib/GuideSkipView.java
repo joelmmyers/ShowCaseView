@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.SkipButtonPosition;
-import smartdevelop.ir.eram.showcaseviewlib.listener.GuideSkipListener;
 
 class GuideSkipView extends FrameLayout {
 

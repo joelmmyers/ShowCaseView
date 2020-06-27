@@ -78,10 +78,8 @@ public class GuideView extends FrameLayout {
     private float circleIndicatorSize;
     private float circleIndicatorSizeFinal;
     private float circleInnerIndicatorSize;
-    private float lineWidth;
     private float lineHeight;
     private float guideMargin;
-    private float circleStrokeWidth;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -153,10 +151,8 @@ public class GuideView extends FrameLayout {
     private void initParams() {
         highlightingShape = HIGHLIGHTING_SHAPE;
         highlightingRadius = RADIUS_SIZE_TARGET_RECT;
-        lineWidth = LINE_INDICATOR_WIDTH_SIZE * density;
         guideMargin = MARGIN_INDICATOR * density;
         lineHeight = INDICATOR_HEIGHT * density;
-        circleStrokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
     }
 
@@ -166,12 +162,12 @@ public class GuideView extends FrameLayout {
 
         linePaint.setStyle(Paint.Style.FILL);
         linePaint.setColor(LINE_INDICATOR_COLOR);
-        linePaint.setStrokeWidth(lineWidth);
+        linePaint.setStrokeWidth(LINE_INDICATOR_WIDTH_SIZE * density);
 
         circleStrokePaint.setStyle(Paint.Style.STROKE);
         circleStrokePaint.setColor(CIRCLE_INDICATOR_COLOR);
         circleStrokePaint.setStrokeCap(Paint.Cap.ROUND);
-        circleStrokePaint.setStrokeWidth(circleStrokeWidth);
+        circleStrokePaint.setStrokeWidth(STROKE_CIRCLE_INDICATOR_SIZE * density);
 
         circleFillPaint.setStyle(Paint.Style.FILL);
         circleFillPaint.setColor(CIRCLE_INNER_INDICATOR_COLOR);
@@ -497,6 +493,7 @@ public class GuideView extends FrameLayout {
         if (highlightingShape != HighlightingShape.CIRCLE) {
             highlightingRadius = radius;
         }
+        invalidate();
     }
 
     public void setTitle(String str) {
@@ -508,12 +505,11 @@ public class GuideView extends FrameLayout {
     }
 
     public void setLineWidth(float width) {
-        lineWidth = width * density;
-        linePaint.setStrokeWidth(lineWidth);
+        linePaint.setStrokeWidth(width);
     }
 
     public void setLineHeight(float height) {
-        lineHeight = height * density;
+        lineHeight = height;
     }
 
     public void setLineColor(int color) {
@@ -529,8 +525,7 @@ public class GuideView extends FrameLayout {
     }
 
     public void setCircleStrokeWidth(float width) {
-        circleStrokeWidth = width * density;
-        circleStrokePaint.setStrokeWidth(circleStrokeWidth);
+        circleStrokePaint.setStrokeWidth(width);
     }
 
     public void setContentSpan(Spannable span) {
@@ -976,7 +971,6 @@ public class GuideView extends FrameLayout {
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.messageGravity = messageGravity != null ? messageGravity : MessageGravity.AUTO;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
-            float density = context.getResources().getDisplayMetrics().density;
 
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
@@ -995,7 +989,7 @@ public class GuideView extends FrameLayout {
                 guideView.setHighlightingRadius(highlightingRadius);
             }
             if (circleSize != 0)
-                guideView.circleIndicatorSizeFinal = circleSize * density;
+                guideView.circleIndicatorSizeFinal = circleSize;
             if (circleStrokeWidth != 0)
                 guideView.setCircleStrokeWidth(circleStrokeWidth);
             if (lineColor != 0)
