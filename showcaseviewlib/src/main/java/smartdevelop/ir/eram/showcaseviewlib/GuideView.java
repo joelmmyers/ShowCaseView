@@ -67,7 +67,7 @@ public class GuideView extends FrameLayout {
     private RectF targetRect;
     private final Rect selfRect = new Rect();
 
-    private float density, stopY;
+    private float density, lineStartY;
     private boolean isMessageAtTop;
     private boolean mIsShowing;
     private int yMessageView;
@@ -145,7 +145,9 @@ public class GuideView extends FrameLayout {
 
         guideMargin = (int) (isMessageAtTop ? guideMargin : -guideMargin);
         startYLineAndCircle = (isMessageAtTop ? targetRect.bottom : targetRect.top) + guideMargin;
-        stopY = yMessageView + lineHeight;
+
+        if(isMessageAtTop) lineStartY = yMessageView;
+        else lineStartY = yMessageView + mMessageView.getMeasuredHeight();
     }
 
     private void initParams() {
@@ -248,7 +250,7 @@ public class GuideView extends FrameLayout {
             }
         });
 
-        final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(stopY, startYLineAndCircle);
+        final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(lineStartY, startYLineAndCircle);
         linePositionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -308,10 +310,13 @@ public class GuideView extends FrameLayout {
         // Draw line and circle
         final float x = (targetRect.left / 2 + targetRect.right / 2);
 
+        //Density is necessary to avoid padding differences
+        float lineYStart = lineStartY + density;
+
         canvas.drawLine(x,
                 startYLineAndCircle,
                 x,
-                stopY,
+                lineYStart,
                 linePaint);
 
         canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, circleStrokePaint);
@@ -509,7 +514,7 @@ public class GuideView extends FrameLayout {
     }
 
     public void setLineHeight(float height) {
-        lineHeight = height;
+        lineHeight = height * density;
     }
 
     public void setLineColor(int color) {
@@ -758,13 +763,6 @@ public class GuideView extends FrameLayout {
             this.titleTypeFace = typeFace;
             return this;
         }
-
-        /**
-         * the defined text size overrides any defined size in the default or provided style
-         *
-         * @param size title text by sp unit
-         * @return builder
-         */
 
         /**
          * Changes default dim color

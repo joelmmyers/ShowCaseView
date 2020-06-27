@@ -154,10 +154,11 @@ class GuideMessageView extends LinearLayout {
 
         this.getLocationOnScreen(location);
 
-        mRect.set(CORNERS,
-                CORNERS,
-                getWidth() - CORNERS,
-                getHeight() - CORNERS
+        float strokePadding = (float) Math.ceil(mStrokePaint.getStrokeWidth() / 2f);
+        mRect.set(strokePadding,
+                strokePadding,
+                getWidth() - strokePadding,
+                getHeight() - strokePadding
         );
 
         canvas.drawRoundRect(mRect, CORNERS, CORNERS, mPaint);
