@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ class GuideMessageView extends LinearLayout {
 
     private static final int COLOR = Color.WHITE;
     private static final int PADDING = 10;
-    private static final int SPACE_BETWEEN = -4;
+    private static final int SPACE_BETWEEN = 6;
 
     private Paint mPaint;
     private Paint mStrokePaint;
@@ -53,8 +54,9 @@ class GuideMessageView extends LinearLayout {
         final int padding = (int) (PADDING * density);
         final int spacingBetween = (int) (SPACE_BETWEEN * density);
 
+        setPadding(padding, padding, padding, padding);
+
         mTitleTextView = new TextView(context);
-        mTitleTextView.setPadding(padding, padding, padding, spacingBetween);
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         mTitleTextView.setTextColor(Color.BLACK);
@@ -62,12 +64,12 @@ class GuideMessageView extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
+        titleLayoutParams.setMargins(0, 0, 0, spacingBetween);
         addView(mTitleTextView, titleLayoutParams);
 
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        mContentTextView.setPadding(padding, padding, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
         LayoutParams contentLayoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -80,9 +82,12 @@ class GuideMessageView extends LinearLayout {
 
     public void setTitle(String title) {
         if (title == null || title.isEmpty()) {
-            removeView(mTitleTextView);
+            mTitleTextView.setVisibility(View.GONE);
             return;
+        } else {
+            mTitleTextView.setVisibility(View.VISIBLE);
         }
+
         mTitleTextView.setText(title);
     }
 
@@ -143,10 +148,7 @@ class GuideMessageView extends LinearLayout {
 
         this.getLocationOnScreen(location);
 
-        mRect.set(getPaddingLeft(),
-                getPaddingTop(),
-                getWidth() - getPaddingRight(),
-                getHeight() - getPaddingBottom());
+        mRect.set(0, 0, getWidth(), getHeight());
 
         canvas.drawRoundRect(mRect, 15, 15, mPaint);
 

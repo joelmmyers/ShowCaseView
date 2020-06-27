@@ -40,7 +40,6 @@ public class GuideView extends FrameLayout {
     static final String TAG = "GuideView";
 
     private static final int INDICATOR_HEIGHT = 40;
-    private static final int MESSAGE_VIEW_PADDING = 5;
 
     private static final int SIZE_ANIMATION_DURATION = 700;
     private static final int SHOW_HIDE_ANIMATION_DURATION = 400;
@@ -81,7 +80,6 @@ public class GuideView extends FrameLayout {
     private float circleInnerIndicatorSize;
     private float lineWidth;
     private float lineHeight;
-    private int messageViewPadding;
     private float guideMargin;
     private float circleStrokeWidth;
 
@@ -157,7 +155,6 @@ public class GuideView extends FrameLayout {
         lineWidth = LINE_INDICATOR_WIDTH_SIZE * density;
         guideMargin = MARGIN_INDICATOR * density;
         lineHeight = INDICATOR_HEIGHT * density;
-        messageViewPadding = (int) (MESSAGE_VIEW_PADDING * density);
         circleStrokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
     }
@@ -199,9 +196,6 @@ public class GuideView extends FrameLayout {
 
     private void initMessageView() {
         mMessageView = new GuideMessageView(getContext());
-        mMessageView.setPadding(
-                messageViewPadding, messageViewPadding,
-                messageViewPadding, messageViewPadding);
 
         ViewGroup.LayoutParams messageLayoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
