@@ -487,9 +487,9 @@ public class GuideView extends FrameLayout {
     private void dismissSelf(boolean isSkip) {
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
         if (isSkip) {
-            if (mGuideListener != null) mGuideListener.onDismiss(target);
-        } else {
             if (mGuideSkipListener != null) mGuideSkipListener.onSkip(GuideView.this);
+        } else {
+            if (mGuideListener != null) mGuideListener.onDismiss(target);
         }
     }
 
