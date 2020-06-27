@@ -976,7 +976,7 @@ public class GuideView extends FrameLayout {
         public GuideView build() {
             GuideView guideView = new GuideView(context);
             guideView.target = targetView;
-            guideView.mGravity = gravity != null ? gravity : Gravity.auto;
+            guideView.mGravity = gravity != null ? gravity : Gravity.center;
             guideView.messageGravity = messageGravity != null ? messageGravity : MessageGravity.AUTO;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
 
