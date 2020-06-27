@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
@@ -112,6 +111,8 @@ public class GuideView extends FrameLayout {
     private void setup() {
         setWillNotDraw(false);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        setAlpha(0f);
     }
 
     private void init() {
@@ -323,30 +324,6 @@ public class GuideView extends FrameLayout {
         canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, circleFillPaint);
     }
 
-    public boolean isShowing() {
-        return mIsShowing;
-    }
-
-    public void dismiss() {
-        if (!mIsShowing) return;
-
-        animate()
-                .alpha(0f)
-                .setDuration(SHOW_HIDE_ANIMATION_DURATION)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
-                        if (mGuideListener != null) {
-                            mGuideListener.onDismiss(target);
-                        }
-                    }
-                })
-                .start();
-
-        mIsShowing = false;
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -460,6 +437,10 @@ public class GuideView extends FrameLayout {
             yMessageView = 0;
     }
 
+    public boolean isShowing() {
+        return mIsShowing;
+    }
+
     public void show() {
         if (mIsShowing) return;
 
@@ -473,12 +454,31 @@ public class GuideView extends FrameLayout {
 
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
 
-        AlphaAnimation startAnimation = new AlphaAnimation(0.0f, 1.0f);
-        startAnimation.setDuration(SHOW_HIDE_ANIMATION_DURATION);
-        startAnimation.setFillAfter(true);
-        this.startAnimation(startAnimation);
+        animate()
+                .alpha(1f)
+                .setDuration(SHOW_HIDE_ANIMATION_DURATION);
 
         mIsShowing = true;
+    }
+
+    public void dismiss() {
+        if (!mIsShowing) return;
+
+        animate()
+                .alpha(0f)
+                .setDuration(SHOW_HIDE_ANIMATION_DURATION)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(GuideView.this);
+                        if (mGuideListener != null) {
+                            mGuideListener.onDismiss(target);
+                        }
+                    }
+                })
+                .start();
+
+        mIsShowing = false;
     }
 
     public void setHighlightingShape(HighlightingShape highlightingShape) {
