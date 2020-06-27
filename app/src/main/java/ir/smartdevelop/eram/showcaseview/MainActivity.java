@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.selfView)
                 .setTargetView(view1)
+                .setMessageStrokeWidth(10)
+                .setMessageStrokeColor(Color.BLUE)
                 .setWithSkipButton(true)
                 .setSkipButtonText("Skip")
                 .setSkipButtonPosition(SkipButtonPosition.TOP_RIGHT)

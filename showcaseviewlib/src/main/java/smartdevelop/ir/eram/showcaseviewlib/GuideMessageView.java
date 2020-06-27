@@ -22,11 +22,14 @@ class GuideMessageView extends LinearLayout {
 
     private static final int COLOR = Color.WHITE;
     private static final int PADDING = 10;
+    private static final int CORNERS = 15;
     private static final int SPACE_BETWEEN = 6;
 
-    private Paint mPaint;
-    private Paint mStrokePaint;
-    private RectF mRect;
+    float density;
+
+    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private RectF mRect = new RectF();
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
@@ -35,28 +38,35 @@ class GuideMessageView extends LinearLayout {
     GuideMessageView(Context context) {
         super(context);
 
-        float density = context.getResources().getDisplayMetrics().density;
+        density = context.getResources().getDisplayMetrics().density;
+
         setWillNotDraw(false);
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
 
-        mRect = new RectF();
+        initPaints();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        initViews();
+
+        setColor(COLOR);
+    }
+
+    private void initPaints() {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mStrokePaint.setStyle(Paint.Style.STROKE);
         mStrokePaint.setStrokeCap(Paint.Cap.ROUND);
         mStrokePaint.setStrokeWidth(0);
+    }
 
+    private void initViews() {
         final int padding = (int) (PADDING * density);
         final int spacingBetween = (int) (SPACE_BETWEEN * density);
 
         setPadding(padding, padding, padding, padding);
 
-        mTitleTextView = new TextView(context);
+        mTitleTextView = new TextView(getContext());
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         mTitleTextView.setTextColor(Color.BLACK);
@@ -67,7 +77,7 @@ class GuideMessageView extends LinearLayout {
         titleLayoutParams.setMargins(0, 0, 0, spacingBetween);
         addView(mTitleTextView, titleLayoutParams);
 
-        mContentTextView = new TextView(context);
+        mContentTextView = new TextView(getContext());
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         mContentTextView.setGravity(Gravity.CENTER);
@@ -76,8 +86,6 @@ class GuideMessageView extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         addView(mContentTextView, contentLayoutParams);
-
-        setColor(COLOR);
     }
 
     public void setTitle(String title) {
@@ -148,12 +156,16 @@ class GuideMessageView extends LinearLayout {
 
         this.getLocationOnScreen(location);
 
-        mRect.set(0, 0, getWidth(), getHeight());
+        mRect.set(CORNERS,
+                CORNERS,
+                getWidth() - CORNERS,
+                getHeight() - CORNERS
+        );
 
-        canvas.drawRoundRect(mRect, 15, 15, mPaint);
+        canvas.drawRoundRect(mRect, CORNERS, CORNERS, mPaint);
 
-        if(mStrokePaint.getStrokeWidth() > 0) {
-            canvas.drawRoundRect(mRect, 15, 15, mStrokePaint);
+        if (mStrokePaint.getStrokeWidth() > 0) {
+            canvas.drawRoundRect(mRect, CORNERS, CORNERS, mStrokePaint);
         }
     }
 }

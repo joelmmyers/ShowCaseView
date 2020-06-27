@@ -163,22 +163,18 @@ public class GuideView extends FrameLayout {
     private void initPaints() {
         dimPaint.setColor(DIM_COLOR);
         dimPaint.setStyle(Paint.Style.FILL);
-        dimPaint.setAntiAlias(true);
 
         linePaint.setStyle(Paint.Style.FILL);
         linePaint.setColor(LINE_INDICATOR_COLOR);
         linePaint.setStrokeWidth(lineWidth);
-        linePaint.setAntiAlias(true);
 
         circleStrokePaint.setStyle(Paint.Style.STROKE);
         circleStrokePaint.setColor(CIRCLE_INDICATOR_COLOR);
         circleStrokePaint.setStrokeCap(Paint.Cap.ROUND);
         circleStrokePaint.setStrokeWidth(circleStrokeWidth);
-        circleStrokePaint.setAntiAlias(true);
 
         circleFillPaint.setStyle(Paint.Style.FILL);
         circleFillPaint.setColor(CIRCLE_INNER_INDICATOR_COLOR);
-        circleFillPaint.setAntiAlias(true);
 
         targetPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         targetPaint.setAntiAlias(true);
