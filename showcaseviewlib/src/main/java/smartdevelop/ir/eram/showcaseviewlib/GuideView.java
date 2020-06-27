@@ -243,7 +243,7 @@ public class GuideView extends FrameLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 circleIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
-                circleInnerIndicatorSize = (float) circleSizeAnimator.getAnimatedValue() - density;
+                circleInnerIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
                 postInvalidate();
             }
         });
