@@ -113,6 +113,12 @@ public class GuideView extends FrameLayout {
     }
 
     private void init() {
+        if (target == null) {
+            throw new IllegalStateException(
+                    this.getClass().getSimpleName() + " requires target view to be provided"
+            );
+        }
+
         density = getResources().getDisplayMetrics().density;
 
         initParams();
